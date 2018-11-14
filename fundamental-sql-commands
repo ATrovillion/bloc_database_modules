@@ -1,0 +1,135 @@
+1. List the commands for adding, updating, and deleting data.
+    The commands for adding, updating, and deleting data are INSERT, UPDATE, and DELETE.
+2. Explain the structure for each type of command.
+    a. INSERT--structured with an INTO statement identifying the table, and a VALUES statement
+    indicating into which columns the data should be inserted.
+
+    b. UPDATE-- structured with the table name, a SET statement that specifies the value to which
+    the data should be changed, and a WHERE statement specifying which column/cell/row the data
+    should be updated for.
+    
+    c. DELETE-- structures with a FROM statement indicating from which table the data should be
+    deleted, and a WHERE clause indicating which data should be removed.
+
+3.  What are some of the data types that can be used in tables?
+Give a real-world example of each type.
+    Postgres accommodates over 40 data types. A few of them (along with an example of each) are:
+    a. integer--  the number of students in a class
+    b. money-- the amount of cheddar, lettuce, lana, skrilla, or filthy lucre I have in my wallet
+    c. date-- the fast-looming day for the end of my bloc program (yikes!)
+    d. text-- the name of a bicycle (e.g., "The Huffy Dominator 2XZ")
+    e. Boolean-- data indicating whether a student has signed up for an event
+
+4. Decide how to create a new table to hold a list of people invited to a wedding dinner. The table
+needs to have first and last names, whether they sent in their RSVP, the number of guests they are
+bringing, and the number of meals (1 for adults and 1/2 for children).
+    a. Which data type would you use to store each of the following pieces of information?
+        *First and last name: a text string will do for both of these
+        *Whether they sent in their RSVP: this is a classic place to use a Boolean (did they do it or not?)
+        *Number of guests: integer
+        *Number of meals: numeric will work here; we can limit the number to two total digits, with one after the decimal
+    b. Write a command that creates the table to track the wedding dinner.
+        CREATE TABLE guests (
+            last_name TEXT,
+            first_name TEXT,
+            RSVP BOOLEAN,
+            num_guests INT,
+            num_meals NUMERIC   
+        );
+
+
+    c. Write a command that adds a column to track whether the guest sent a thank you card.
+        ALTER TABLE guests
+        ADD COLUMN thank_you BOOLEAN;
+
+    d. You have decided to move the data about the meals to another table, so write a command
+    to remove the column storing the number meals from the wedding table.
+        ALTER TABLE guests
+        DROP COLUMN num_meals;
+
+    e. The guests will need a place to sit at the reception, so write a command that adds a column for table number.
+        ALTER TABLE guests
+        ADD COLUMN table_number INTEGER;
+
+    f. The wedding is over and we do not need to keep this information, so write a command that deletes the table
+        numbers from the database.
+            UPDATE guests
+            SET table_number = NULL;
+
+5. Write a command to create a new table to hold the books in a library with the columns ISBN, title, author, genre, publishing date, number of copies, and available copies.
+        CREATE TABLE library (
+            ISBN integer,
+            title text,
+            author text,
+            genre text,
+            publish_date date,
+            num_copies integer,
+            available_copies integer 
+        );
+    a. Find three books and add their information to the table.
+        INSERT INTO library (ISBN, title, author, genre, publish_date, num_copies, available_copies)
+        VALUES
+        (0375869026, 'Wonder', 'R.J. Palacio', 'children's lit', 'February 14, 2012', 10, 5),
+        (9780547928227, 'The Hobbit', 'J.R.R. Tolkien', 'fantasy', 'September 21, 1937', 30, 25),
+        (0316172324, 'Blink', 'Malcolm Gladwell', 'non-fiction', 'January 11, 2005', 10, 7);
+    
+    b. Someone has just checked out one of the books. Change the number of available copies to 1 fewer.
+        UPDATE library SET available_copies=4 WHERE ISBN=0375869026;
+
+    c. Now one of the books has been added to the banned books list. Remove it from the table.
+        DELETE FROM library WHERE ISBN=0316172324;
+
+6. Write a command to make a new table to hold spacecrafts. Information should include id, name, year launched,
+country of origin, a brief description of the mission, orbiting body, if it is currently operating, 
+and its approximate miles from Earth.
+        CREATE TABLE spacecraft (
+            ID integer,
+            name text,
+            launch_year date,
+            country text,
+            mission text,
+            operating boolean,
+            distance integer
+        );
+
+
+    a. Add three non-Earth-orbiting satellites to the table.
+        INSERT INTO spacecraft (ID, name, launch_year, country, mission, operating, distance)
+        VALUES
+        (1977084, 'Voyager', 1977, 'USA', 'outer planetary and interstellar exploration', 1, 11700000000),
+        (1977076, 'Voyager 2', 1977, 'USA', 'planetary exploration', 1, 9500000000),
+        (1989084, 'Galileo', 1989, 'USA', 'Jupiter orbiter', 0, 2800000000);
+
+
+    b. Remove one of the satellites from the table since it has just crashed into the planet.
+        DELETE FROM spacecraft WHERE ID=1989084;
+
+    c. Edit another satellite because it is no longer operating and change the value to reflect that.
+        UPDATE spacecraft SET operating=0 WHERE ID=1977076;
+
+7. Write a command to create a new table to hold the emails in your inbox. This table should include an id,
+the subject line, the sender, any additional recipients, the body of the email, the timestamp, whether or not
+you have read the email, and the id of the email chain it's in.
+    CREATE TABLE inbox (
+        ID integer,
+        subject text,
+        sender text,
+        addtl_recipients text,
+        body text,
+        timestamp date,
+        read boolean,
+        email_chain integer
+    );
+
+    a. Add three new emails to the inbox.
+        INSERT INTO inbox (ID, subject, sender, addtl_recipients, body, timestamp, read, email_chain)
+        VALUES
+        (12345,'call your mother', 'Mom', 'Ralph', 'Please call your mother', 04:05:06, 1, 'family guilt'),
+        (11234, 'we need to talk', 'Lisa', NULL, 'We really need to talk', 04:05:06, 0, 'the breakup')
+        (14789, 'final notice', 'PEPCO', 'bill collector', 'Please pay electric immediately', 04:05:06, 1, 'to do');
+
+    b. You deleted one of the emails, so write a command to remove the row from the inbox table.
+        DELETE FROM inbox WHERE ID=12345;
+
+    c. You started reading an email but just heard a crash in another room. Mark the email as unread before investigating the crash, so you can come back and read it later.
+        UPDATE inbox SET read=0 WHERE ID=11234;
