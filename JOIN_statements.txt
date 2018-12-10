@@ -99,10 +99,10 @@ A JOIN statement is used to combine related data in separate data tables.
         ORDER BY holds.rank;
 
     b. List all of the library patrons. If they have one or more books checked out, list the books with the patrons.
-        SELECT DISTINCT patrons.*, books.title
+        SELECT DISTINCT ON (patrons.name) patrons.*, books.title, transactions.patron_id
         FROM patrons
         LEFT OUTER JOIN transactions
         ON patrons.id = transactions.patron_id
         LEFT JOIN books
-        ON transactions.isbn = books.isbn AND transactions.checked_in_date IS NULL
-        ORDER BY patrons.id;
+        ON transactions.isbn = books.isbn AND transactions.checked_in_date IS NULL 
+        ORDER BY patrons.name;
